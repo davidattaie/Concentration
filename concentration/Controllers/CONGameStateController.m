@@ -5,8 +5,10 @@
 //  Created by David Attaie on 9/9/18.
 //  Copyright © 2018 David Attaie. All rights reserved.
 //
+@import UIKit;
 
 #import "CONGameStateController.h"
+#import "CONGameState.h"
 #import "CONScore.h"
 
 @interface CONGameStateController()
@@ -19,7 +21,8 @@
 
 @synthesize topScores = _topScores;
 
-static NSString *TopScoresKey = @"kCONTopScoresKey";
+NSString * const TopScoresKey = @"kCONTopScoresKey";
+NSString * const GameStateKey = @"kCONGameStateKey";
 
 + (CONGameStateController *)sharedController {
     static CONGameStateController *controller = nil;
@@ -28,6 +31,27 @@ static NSString *TopScoresKey = @"kCONTopScoresKey";
         controller = [CONGameStateController new];
     });
     return controller;
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        [self registerForNotifications];
+    }
+    return self;
+}
+
+- (void)setCurrentGameState:(CONGameState *)currentGameState {
+    _currentGameState = currentGameState;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)registerForNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didMoveToBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }
 
 - (void)saveScore:(CONScore *)score {
@@ -41,9 +65,38 @@ static NSString *TopScoresKey = @"kCONTopScoresKey";
     [self setTopScores:[scoreArray copy]];
 }
 
+#pragma mark - Notifications
+
+- (void)didMoveToBackground:(NSNotification *)note {
+    [self saveCurrentGameState];
+}
+
+- (void)willEnterForeground:(NSNotification *)note {
+    [self restoreCurrentGameState];
+}
+
+- (void)willTerminate:(NSNotification *)note {
+    [self saveCurrentGameState];
+}
+
 #pragma mark - Game State Persistence
 
+- (void)saveCurrentGameState {
+    NSData *encodedState = [NSKeyedArchiver archivedDataWithRootObject:self.currentGameState];
+    [[NSUserDefaults standardUserDefaults] setObject:encodedState forKey:GameStateKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
+- (void)clearLastSavedGameState {
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:GameStateKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)restoreCurrentGameState {
+    NSData *dataForKey = [[NSUserDefaults standardUserDefaults] objectForKey:GameStateKey];
+    CONGameState *existingValue = [NSKeyedUnarchiver unarchiveObjectWithData:dataForKey];
+    _currentGameState = existingValue;
+}
 
 #pragma mark - Top Score Persistence
 
@@ -63,6 +116,14 @@ static NSString *TopScoresKey = @"kCONTopScoresKey";
     [[NSUserDefaults standardUserDefaults] setObject:encodedScore forKey:TopScoresKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
+#pragma mark - Game State Management
+
+- (void)createNewGameStateWithDifficulty:(NSInteger)difficulty {
+    CONGameState *newGameState = [[CONGameState alloc] initNewGameWithDifficulty:difficulty];
+    self.currentGameState = newGameState;
+}
+
 
 
 @end

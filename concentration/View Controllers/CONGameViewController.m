@@ -15,7 +15,7 @@
 
 @interface CONGameViewController () <UICollectionViewDataSource, UICollectionViewDelegate, CONGameStateDelegate>
 
-@property (nonatomic, nullable, strong) CONGameState *currentGameState;
+@property (nonatomic, nullable, weak) CONGameState *currentGameState;
 @property (nonatomic, nullable, weak) UICollectionView *collectionView;
 @property (nonatomic, nullable, weak) UIButton *endGameButton;
 @property (nonatomic, nullable, weak) UILabel *scoreLabel;
@@ -28,6 +28,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 
 - (instancetype)initWithGameState:(CONGameState *)gameState {
     if (self = [super init]) {
+        [[CONGameStateController sharedController] setCurrentGameState:gameState];
         _currentGameState = gameState;
         [_currentGameState setDelegate:self];
     }
@@ -36,18 +37,15 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setupGame];
     [self setupScoreLabel];
     [self setupEndGameButton];
     [self setupCollectionView];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-}
-
-- (void)setupGame {
-    self.currentGameState = [[CONGameState alloc] initNewGameWithDifficulty:self.currentGameState.score.numberOfPairs];
+- (void)setNewGame {
+    NSInteger difficulty = [self.currentGameState.score numberOfPairs];
+    [[CONGameStateController sharedController] createNewGameStateWithDifficulty:difficulty];
+    self.currentGameState = [[CONGameStateController sharedController] currentGameState];
     [self.currentGameState setDelegate:self];
     [self.collectionView reloadData];
 }
@@ -122,27 +120,33 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 #pragma mark - Actions
 
 - (void)endGame:(id)target {
-    //notification to save state?
-    [self dismissViewControllerAnimated:YES completion:nil];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Exit"
+                                                                             message:@"Would you like to save your game?" preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[CONGameStateController sharedController] saveCurrentGameState];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [[CONGameStateController sharedController] setCurrentGameState:nil];
+        [[CONGameStateController sharedController] clearLastSavedGameState];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)showFinalScore {
     NSString *message = [NSString stringWithFormat:@"Your score was %li\nWould you like to start a new game?", self.currentGameState.score.score];
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Congratulations!" message:message preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:@"New Game" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self setupGame];
+        [self setNewGame];
         [self.collectionView reloadData];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Main Menu" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[CONGameStateController sharedController] setCurrentGameState:nil];
+        [[CONGameStateController sharedController] clearLastSavedGameState];
         [self dismissViewControllerAnimated:YES completion:nil];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];
-}
-
-#pragma mark - Setup and Configure Cards
-
-- (void)setupCards {
-
 }
 
 #pragma mark - Collection View Data Source
@@ -166,6 +170,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     [selectedCell setupWithCard:selectedCard];
     
     [self.currentGameState incrementScore];
+    [[CONGameStateController sharedController] saveCurrentGameState];
     
     if (collectionView.indexPathsForSelectedItems.count > 1) {
         [collectionView setUserInteractionEnabled:NO];

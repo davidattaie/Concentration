@@ -9,12 +9,14 @@
 #import "CONPreviousScoreViewController.h"
 #import "CONSelectLevelViewController.h"
 #import "CONMainMenuViewController.h"
+#import "CONGameStateController.h"
 #import "CONGameViewController.h"
 #import "CONGameState.h"
 
 @interface CONMainMenuViewController () <CONSelectLevelDelegate>
 
 @property (nonatomic, nullable, weak) CONSelectLevelViewController *selectLevelController;
+@property (nonatomic, nullable, weak) UIButton *resumeGameButton;
 
 @end
 
@@ -27,6 +29,12 @@ static CGFloat ButtonHeight = 80.0f;
     [self setupButtonStack];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[CONGameStateController sharedController] restoreCurrentGameState];
+    [self.resumeGameButton setEnabled:[[CONGameStateController sharedController] currentGameState]];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
@@ -36,11 +44,16 @@ static CGFloat ButtonHeight = 80.0f;
     [newGameButton setTitle:@"New Game" forState:UIControlStateNormal];
     [newGameButton addTarget:self action:@selector(launchNewGame:) forControlEvents:UIControlEventTouchUpInside];
     
+    UIButton *resumeLastGame = [UIButton buttonWithType:UIButtonTypeCustom];
+    [resumeLastGame setTitle:@"Resume Last Saved game" forState:UIControlStateNormal];
+    [resumeLastGame addTarget:self action:@selector(launchLastSavedGame:) forControlEvents:UIControlEventTouchUpInside];
+    self.resumeGameButton = resumeLastGame;
+    
     UIButton *previousScoresButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [previousScoresButton setTitle:@"Previous Scores" forState:UIControlStateNormal];
     [previousScoresButton addTarget:self action:@selector(showPreviousScores:) forControlEvents:UIControlEventTouchUpInside];
     
-    return @[newGameButton, previousScoresButton];
+    return @[newGameButton, resumeLastGame, previousScoresButton];
 }
 
 - (void)setupButtonStack {
@@ -77,6 +90,12 @@ static CGFloat ButtonHeight = 80.0f;
 - (void)showPreviousScores:(id)sender {
     CONPreviousScoreViewController *previousScoreViewController = [CONPreviousScoreViewController new];
     [self.navigationController pushViewController:previousScoreViewController animated:YES];
+}
+
+- (void)launchLastSavedGame:(id)sender {
+    CONGameState *currentGame = [[CONGameStateController sharedController] currentGameState];
+    CONGameViewController *gameViewController = [[CONGameViewController alloc] initWithGameState:currentGame];
+    [self presentViewController:gameViewController animated:YES completion:nil];
 }
 
 - (void)setupConstraintsForSelectLevelController:(UIView *)selectLevelView {
