@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  CONOpeningViewController.h
 //  concentration
 //
 //  Created by David Attaie on 9/8/18.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface CONOpeningViewController : UIViewController
 
 @end
-

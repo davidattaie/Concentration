@@ -6,6 +6,7 @@
 //  Copyright © 2018 David Attaie. All rights reserved.
 //
 
+#import "CONOpeningViewController.h"
 #import "AppDelegate.h"
 
 @interface AppDelegate ()
@@ -16,7 +17,13 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    UIWindow *window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    [self setWindow:window];
+    
+    CONOpeningViewController *openingViewController = [CONOpeningViewController new];
+    [window setRootViewController:openingViewController];
+    [window makeKeyAndVisible];
+    
     return YES;
 }
 
