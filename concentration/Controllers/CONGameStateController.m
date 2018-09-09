@@ -7,10 +7,11 @@
 //
 
 #import "CONGameStateController.h"
+#import "CONScore.h"
 
 @interface CONGameStateController()
 
-@property (nonatomic, nullable, strong, readwrite) NSArray<NSNumber *> *topScores;
+@property (nonatomic, nullable, strong, readwrite) NSArray<CONScore *> *topScores;
 
 @end
 
@@ -29,12 +30,13 @@ static NSString *TopScoresKey = @"kCONTopScoresKey";
     return controller;
 }
 
-- (void)saveScore:(NSInteger)score {
-    NSMutableArray<NSNumber *> *scoreArray = [[self topScores] mutableCopy];
-    [scoreArray addObject:@(score)];
+- (void)saveScore:(NSInteger)score withCardCount:(NSInteger)count {
+    NSMutableArray<CONScore *> *scoreArray = [[self topScores] mutableCopy];
+    CONScore *parsedScore = [[CONScore alloc] initWithScore:score numberOfPairs:count];
+    [scoreArray addObject:parsedScore];
     
-    [scoreArray sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-        return obj1 > obj2;
+    [scoreArray sortUsingComparator:^NSComparisonResult(CONScore *_Nonnull obj1, CONScore *_Nonnull obj2) {
+        return obj1.score > obj2.score;
     }];
     
     [self setTopScores:[scoreArray copy]];
@@ -42,17 +44,20 @@ static NSString *TopScoresKey = @"kCONTopScoresKey";
 
 #pragma mark - Top Score Persistence
 
-- (NSArray<NSNumber *> *)topScores {
+- (NSArray<CONScore *> *)topScores {
     if (!_topScores) {
-        NSArray<NSNumber *> *existingValue = [[NSUserDefaults standardUserDefaults] arrayForKey:TopScoresKey];
-        _topScores = existingValue ?: @[];
+        NSData *dataForKey = [[NSUserDefaults standardUserDefaults] objectForKey:TopScoresKey];
+        NSArray<CONScore *> *existingValue = [NSKeyedUnarchiver unarchiveObjectWithData:dataForKey];
+        _topScores = existingValue ?: [NSArray<CONScore *> new];
     }
     return _topScores;
 }
 
-- (void)setTopScores:(NSArray<NSNumber *> *)topScores {
+- (void)setTopScores:(NSArray<CONScore *> *)topScores {
     _topScores = topScores;
-    [[NSUserDefaults standardUserDefaults] setObject:topScores forKey:TopScoresKey];
+    
+    NSData *encodedScore = [NSKeyedArchiver archivedDataWithRootObject:topScores];
+    [[NSUserDefaults standardUserDefaults] setObject:encodedScore forKey:TopScoresKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

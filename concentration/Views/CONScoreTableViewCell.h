@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class CONScore;
+
 @interface CONScoreTableViewCell : UITableViewCell
 
 + (NSString * __nonnull)cellIdentifier;
+
+- (void)setupWithScore:(CONScore * __nullable)score;
 
 @end

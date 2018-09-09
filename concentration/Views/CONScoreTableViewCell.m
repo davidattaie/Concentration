@@ -7,11 +7,22 @@
 //
 
 #import "CONScoreTableViewCell.h"
+#import "CONScore.h"
+
+@interface CONScoreTableViewCell()
+
+@end
 
 @implementation CONScoreTableViewCell
 
 + (NSString *)cellIdentifier {
     return NSStringFromClass(self);
+}
+
+- (void)setupWithScore:(CONScore *)score {
+    [self.textLabel setTextAlignment:NSTextAlignmentCenter];
+    NSString *scoreString = [NSString stringWithFormat:@"Score: %li  Difficulty(%li)", score.score, score.numberOfPairs];
+    [self.textLabel setText:scoreString];
 }
 
 @end

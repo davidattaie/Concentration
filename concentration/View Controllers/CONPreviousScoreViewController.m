@@ -9,6 +9,7 @@
 #import "CONPreviousScoreViewController.h"
 #import "CONGameStateController.h"
 #import "CONScoreTableViewCell.h"
+#import "CONScore.h"
 
 @interface CONPreviousScoreViewController () <UITableViewDataSource>
 
@@ -29,6 +30,7 @@
     UITableView *tableView = [UITableView new];
     [tableView setDataSource:self];
     [tableView registerClass:[CONScoreTableViewCell class] forCellReuseIdentifier:[CONScoreTableViewCell cellIdentifier]];
+    [tableView setTableFooterView:[UIView new]];
     [self.view addSubview:tableView];
     self.tableView = tableView;
     [self addConstraintsForTableView:tableView];
@@ -48,8 +50,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CONScoreTableViewCell *scoreCell = [tableView dequeueReusableCellWithIdentifier:[CONScoreTableViewCell cellIdentifier]];
-    NSNumber *score = [[CONGameStateController sharedController] topScores][indexPath.row];
-    [scoreCell.textLabel setText:[NSString stringWithFormat:@"%@", score]];
+    CONScore *score = [[CONGameStateController sharedController] topScores][indexPath.row];
+    [scoreCell setupWithScore:score];
     return scoreCell;
 }
 

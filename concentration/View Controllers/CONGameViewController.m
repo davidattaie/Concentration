@@ -117,7 +117,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
             return;
         }
     }
-    [[CONGameStateController sharedController] saveScore:self.score];
+    [[CONGameStateController sharedController] saveScore:self.score withCardCount:self.numberOfPairs];
     [self showFinalScore];
 }
 
@@ -134,7 +134,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 }
 
 - (void)showFinalScore {
-    NSString *message = [NSString stringWithFormat:@"Good Job!\n\nYour score was %li\nWould you like to start a new game?", self.score];
+    NSString *message = [NSString stringWithFormat:@"Your score was %li\nWould you like to start a new game?", self.score];
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Congratulations!" message:message preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:@"New Game" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self setupGame];

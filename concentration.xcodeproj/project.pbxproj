@@ -20,6 +20,7 @@
 		633515BA2144F65500A28320 /* CONPreviousScoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515B92144F65500A28320 /* CONPreviousScoreViewController.m */; };
 		633515BD2144F68C00A28320 /* CONScoreTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515BC2144F68C00A28320 /* CONScoreTableViewCell.m */; };
 		633515C121459EFA00A28320 /* CONGameStateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515C021459EFA00A28320 /* CONGameStateController.m */; };
+		633515C42145AAF700A28320 /* CONScore.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515C32145AAF700A28320 /* CONScore.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,8 @@
 		633515BC2144F68C00A28320 /* CONScoreTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONScoreTableViewCell.m; sourceTree = "<group>"; };
 		633515BF21459EFA00A28320 /* CONGameStateController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CONGameStateController.h; sourceTree = "<group>"; };
 		633515C021459EFA00A28320 /* CONGameStateController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONGameStateController.m; sourceTree = "<group>"; };
+		633515C22145AAF700A28320 /* CONScore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CONScore.h; sourceTree = "<group>"; };
+		633515C32145AAF700A28320 /* CONScore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONScore.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +118,8 @@
 			children = (
 				6335159D2144C6A100A28320 /* CONCard.h */,
 				6335159E2144C6A100A28320 /* CONCard.m */,
+				633515C22145AAF700A28320 /* CONScore.h */,
+				633515C32145AAF700A28320 /* CONScore.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -222,6 +227,7 @@
 				6335158D2144BD1800A28320 /* main.m in Sources */,
 				633515BD2144F68C00A28320 /* CONScoreTableViewCell.m in Sources */,
 				633515BA2144F65500A28320 /* CONPreviousScoreViewController.m in Sources */,
+				633515C42145AAF700A28320 /* CONScore.m in Sources */,
 				633515AC2144CB4700A28320 /* CONCardCollectionViewCell.m in Sources */,
 				6335159F2144C6A100A28320 /* CONCard.m in Sources */,
 				633515962144BDB900A28320 /* CONMainMenuViewController.m in Sources */,

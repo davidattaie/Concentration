@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+@class CONScore;
+
 @interface CONGameStateController : NSObject
 
-@property (nonatomic, nullable, strong, readonly) NSArray<NSNumber *> *topScores;
+@property (nonatomic, nullable, strong, readonly) NSArray<CONScore *> *topScores;
 
 + (CONGameStateController * __nonnull)sharedController;
 
-- (void)saveScore:(NSInteger)score;
+- (void)saveScore:(NSInteger)score withCardCount:(NSInteger)count;
 
 @end
