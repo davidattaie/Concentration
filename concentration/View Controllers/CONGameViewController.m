@@ -7,6 +7,7 @@
 //
 
 #import "CONCardCollectionViewCell.h"
+#import "CONGameStateController.h"
 #import "CONGameViewController.h"
 #import "UIColor+Random.h"
 #import "CONCard.h"
@@ -116,6 +117,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
             return;
         }
     }
+    [[CONGameStateController sharedController] saveScore:self.score];
     [self showFinalScore];
 }
 

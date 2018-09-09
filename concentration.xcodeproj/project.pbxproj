@@ -19,6 +19,7 @@
 		633515B72144EEA300A28320 /* CONSelectLevelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515B62144EEA300A28320 /* CONSelectLevelViewController.m */; };
 		633515BA2144F65500A28320 /* CONPreviousScoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515B92144F65500A28320 /* CONPreviousScoreViewController.m */; };
 		633515BD2144F68C00A28320 /* CONScoreTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515BC2144F68C00A28320 /* CONScoreTableViewCell.m */; };
+		633515C121459EFA00A28320 /* CONGameStateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515C021459EFA00A28320 /* CONGameStateController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,8 @@
 		633515B92144F65500A28320 /* CONPreviousScoreViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONPreviousScoreViewController.m; sourceTree = "<group>"; };
 		633515BB2144F68C00A28320 /* CONScoreTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CONScoreTableViewCell.h; sourceTree = "<group>"; };
 		633515BC2144F68C00A28320 /* CONScoreTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONScoreTableViewCell.m; sourceTree = "<group>"; };
+		633515BF21459EFA00A28320 /* CONGameStateController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CONGameStateController.h; sourceTree = "<group>"; };
+		633515C021459EFA00A28320 /* CONGameStateController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONGameStateController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +80,7 @@
 		6335157C2144BD1700A28320 /* concentration */ = {
 			isa = PBXGroup;
 			children = (
+				633515BE21459EDD00A28320 /* Controllers */,
 				633515AD2144CDC300A28320 /* Extensions */,
 				6335159C2144C68700A28320 /* Views */,
 				6335159B2144C67700A28320 /* Models */,
@@ -133,6 +137,15 @@
 				633515AF2144CDDA00A28320 /* UIColor+Random.m */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		633515BE21459EDD00A28320 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				633515BF21459EFA00A28320 /* CONGameStateController.h */,
+				633515C021459EFA00A28320 /* CONGameStateController.m */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,6 +227,7 @@
 				633515962144BDB900A28320 /* CONMainMenuViewController.m in Sources */,
 				6335157F2144BD1700A28320 /* AppDelegate.m in Sources */,
 				6335159A2144BE4600A28320 /* CONGameViewController.m in Sources */,
+				633515C121459EFA00A28320 /* CONGameStateController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
