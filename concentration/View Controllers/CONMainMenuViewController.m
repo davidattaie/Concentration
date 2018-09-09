@@ -11,12 +11,13 @@
 #import "CONMainMenuViewController.h"
 #import "CONGameStateController.h"
 #import "CONGameViewController.h"
+#import "CONLoadingButton.h"
 #import "CONGameState.h"
 
 @interface CONMainMenuViewController () <CONSelectLevelDelegate>
 
 @property (nonatomic, nullable, weak) CONSelectLevelViewController *selectLevelController;
-@property (nonatomic, nullable, weak) UIButton *resumeGameButton;
+@property (nonatomic, nullable, weak) CONLoadingButton *resumeGameButton;
 
 @end
 
@@ -31,12 +32,23 @@ static CGFloat ButtonHeight = 80.0f;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[CONGameStateController sharedController] restoreCurrentGameState];
-    [self.resumeGameButton setEnabled:[[CONGameStateController sharedController] currentGameState]];
+    [self loadAndUpdateResumeStatus];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
+- (void)loadAndUpdateResumeStatus {
+    __weak typeof(self) weakSelf = self;
+    [self.resumeGameButton setEnabled:NO];
+    [self.resumeGameButton startLoading];
+    [[CONGameStateController sharedController] restoreCurrentGameState:CONSaveGameLocationAll withCompletion:^{
+        if ([[CONGameStateController sharedController] currentGameState]) {
+            [weakSelf.resumeGameButton setEnabled:YES];
+            [weakSelf.resumeGameButton setTitle:@"Resume Last Saved Game" forState:UIControlStateNormal];
+        } else {
+            [weakSelf.resumeGameButton setEnabled:NO];
+            [weakSelf.resumeGameButton setTitle:@"No Saved Game Found" forState:UIControlStateNormal];
+        }
+        [weakSelf.resumeGameButton stopLoading];
+    }];
 }
 
 - (NSArray<UIView *> *)buttons {
@@ -44,8 +56,8 @@ static CGFloat ButtonHeight = 80.0f;
     [newGameButton setTitle:@"New Game" forState:UIControlStateNormal];
     [newGameButton addTarget:self action:@selector(launchNewGame:) forControlEvents:UIControlEventTouchUpInside];
     
-    UIButton *resumeLastGame = [UIButton buttonWithType:UIButtonTypeCustom];
-    [resumeLastGame setTitle:@"Resume Last Saved game" forState:UIControlStateNormal];
+    CONLoadingButton *resumeLastGame = [CONLoadingButton buttonWithType:UIButtonTypeCustom];
+    [resumeLastGame setTitle:@"Loading Last Saved Game.." forState:UIControlStateNormal];
     [resumeLastGame addTarget:self action:@selector(launchLastSavedGame:) forControlEvents:UIControlEventTouchUpInside];
     self.resumeGameButton = resumeLastGame;
     

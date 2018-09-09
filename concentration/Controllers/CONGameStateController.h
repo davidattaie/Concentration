@@ -10,6 +10,12 @@
 
 @class CONScore, CONGameState;
 
+typedef enum : NSUInteger {
+    CONSaveGameLocationLocalOnly,
+    CONSaveGameLocationServer,
+    CONSaveGameLocationAll
+} CONSaveGameLocation;
+
 @interface CONGameStateController : NSObject
 
 @property (nonatomic, nullable, strong, readonly) NSArray<CONScore *> *topScores;
@@ -18,9 +24,9 @@
 + (CONGameStateController * __nonnull)sharedController;
 
 - (void)saveScore:(CONScore *)score;
-- (void)saveCurrentGameState;
-- (void)clearLastSavedGameState;
-- (void)restoreCurrentGameState;
+- (void)saveCurrentGameState:(CONSaveGameLocation)location;
+- (void)clearLastSavedGameState:(CONSaveGameLocation)location;
+- (void)restoreCurrentGameState:(CONSaveGameLocation)location withCompletion:(void(^)(void))completion;
 - (void)createNewGameStateWithDifficulty:(NSInteger)difficulty;
 
 @end

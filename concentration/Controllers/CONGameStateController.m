@@ -7,6 +7,7 @@
 //
 @import UIKit;
 
+#import "CONNetworkingController.h"
 #import "CONGameStateController.h"
 #import "CONGameState.h"
 #import "CONScore.h"
@@ -50,7 +51,6 @@ NSString * const GameStateKey = @"kCONGameStateKey";
 
 - (void)registerForNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didMoveToBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }
 
@@ -68,34 +68,57 @@ NSString * const GameStateKey = @"kCONGameStateKey";
 #pragma mark - Notifications
 
 - (void)didMoveToBackground:(NSNotification *)note {
-    [self saveCurrentGameState];
-}
-
-- (void)willEnterForeground:(NSNotification *)note {
-    [self restoreCurrentGameState];
+    [self saveCurrentGameState:CONSaveGameLocationAll];
 }
 
 - (void)willTerminate:(NSNotification *)note {
-    [self saveCurrentGameState];
+    [self saveCurrentGameState:CONSaveGameLocationAll];
 }
 
 #pragma mark - Game State Persistence
 
-- (void)saveCurrentGameState {
-    NSData *encodedState = [NSKeyedArchiver archivedDataWithRootObject:self.currentGameState];
-    [[NSUserDefaults standardUserDefaults] setObject:encodedState forKey:GameStateKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+- (void)saveCurrentGameState:(CONSaveGameLocation)location {
+    if (location == CONSaveGameLocationAll || location == CONSaveGameLocationLocalOnly) {
+        NSData *encodedState = [NSKeyedArchiver archivedDataWithRootObject:self.currentGameState];
+        [[NSUserDefaults standardUserDefaults] setObject:encodedState forKey:GameStateKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    if (location == CONSaveGameLocationAll || location == CONSaveGameLocationServer) {
+        [[CONNetworkingController sharedController] saveGameStateToServer:self.currentGameState];
+    }
 }
 
-- (void)clearLastSavedGameState {
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:GameStateKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+- (void)clearLastSavedGameState:(CONSaveGameLocation)location {
+    if (location == CONSaveGameLocationAll || location == CONSaveGameLocationLocalOnly) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:GameStateKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    if (location == CONSaveGameLocationAll || location == CONSaveGameLocationServer) {
+        [[CONNetworkingController sharedController] deleteLastGameStateFromServer];
+    }
 }
 
-- (void)restoreCurrentGameState {
-    NSData *dataForKey = [[NSUserDefaults standardUserDefaults] objectForKey:GameStateKey];
-    CONGameState *existingValue = [NSKeyedUnarchiver unarchiveObjectWithData:dataForKey];
-    _currentGameState = existingValue;
+- (void)restoreCurrentGameState:(CONSaveGameLocation)location withCompletion:(void (^)(void))completion {
+    if (location == CONSaveGameLocationAll || location == CONSaveGameLocationServer) {
+        __weak typeof(self) weakSelf = self;
+        [[CONNetworkingController sharedController] loadGameStateFromServerWithCompletion:^(CONGameState * _Nullable state) {
+            if (state) {
+                weakSelf.currentGameState = state;
+                if (completion) {
+                    completion();
+                }
+            } else {
+                [weakSelf restoreCurrentGameState:CONSaveGameLocationLocalOnly withCompletion:completion]; //try locally if there is no server file
+            }
+        }];
+    } else if (location == CONSaveGameLocationLocalOnly) {
+        NSData *dataForKey = [[NSUserDefaults standardUserDefaults] objectForKey:GameStateKey];
+        CONGameState *existingValue = [NSKeyedUnarchiver unarchiveObjectWithData:dataForKey];
+        _currentGameState = existingValue;
+        if (completion) {
+            completion();
+        }
+    }
 }
 
 #pragma mark - Top Score Persistence
@@ -123,7 +146,5 @@ NSString * const GameStateKey = @"kCONGameStateKey";
     CONGameState *newGameState = [[CONGameState alloc] initNewGameWithDifficulty:difficulty];
     self.currentGameState = newGameState;
 }
-
-
 
 @end

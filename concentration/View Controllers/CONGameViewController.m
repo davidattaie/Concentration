@@ -123,12 +123,12 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Exit"
                                                                              message:@"Would you like to save your game?" preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[CONGameStateController sharedController] saveCurrentGameState];
+        [[CONGameStateController sharedController] saveCurrentGameState:CONSaveGameLocationAll];
         [self dismissViewControllerAnimated:YES completion:nil];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [[CONGameStateController sharedController] setCurrentGameState:nil];
-        [[CONGameStateController sharedController] clearLastSavedGameState];
+        [[CONGameStateController sharedController] clearLastSavedGameState:CONSaveGameLocationAll];
         [self dismissViewControllerAnimated:YES completion:nil];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];
@@ -143,7 +143,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Main Menu" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[CONGameStateController sharedController] setCurrentGameState:nil];
-        [[CONGameStateController sharedController] clearLastSavedGameState];
+        [[CONGameStateController sharedController] clearLastSavedGameState:CONSaveGameLocationAll];
         [self dismissViewControllerAnimated:YES completion:nil];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];
@@ -170,7 +170,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     [selectedCell setupWithCard:selectedCard];
     
     [self.currentGameState incrementScore];
-    [[CONGameStateController sharedController] saveCurrentGameState];
+    [[CONGameStateController sharedController] saveCurrentGameState:CONSaveGameLocationAll];
     
     if (collectionView.indexPathsForSelectedItems.count > 1) {
         [collectionView setUserInteractionEnabled:NO];
