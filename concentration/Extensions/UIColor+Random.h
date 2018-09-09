@@ -1,5 +1,5 @@
 //
-//  CONGameViewController.h
+//  UIColor+Random.h
 //  concentration
 //
 //  Created by David Attaie on 9/8/18.
@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CONGameViewController : UIViewController
+@interface UIColor(Random)
 
-- (instancetype)initWithSize:(NSInteger)size;
++ (UIColor * __nonnull)randomColor;
 
 @end

@@ -60,7 +60,7 @@ static CGFloat buttonHeight = 80.0f;
 #pragma mark - Button Actions
 
 - (void)launchNewGame:(id)target {
-    CONGameViewController *gameViewController = [CONGameViewController new];
+    CONGameViewController *gameViewController = [[CONGameViewController alloc] initWithSize:5];
     [self presentViewController:gameViewController animated:YES completion:nil];
 }
 

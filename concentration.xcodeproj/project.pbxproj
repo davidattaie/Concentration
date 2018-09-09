@@ -13,6 +13,9 @@
 		6335158D2144BD1800A28320 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6335158C2144BD1800A28320 /* main.m */; };
 		633515962144BDB900A28320 /* CONOpeningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515952144BDB900A28320 /* CONOpeningViewController.m */; };
 		6335159A2144BE4600A28320 /* CONGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515992144BE4600A28320 /* CONGameViewController.m */; };
+		6335159F2144C6A100A28320 /* CONCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 6335159E2144C6A100A28320 /* CONCard.m */; };
+		633515AC2144CB4700A28320 /* CONCardCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515AB2144CB4700A28320 /* CONCardCollectionViewCell.m */; };
+		633515B02144CDDA00A28320 /* UIColor+Random.m in Sources */ = {isa = PBXBuildFile; fileRef = 633515AF2144CDDA00A28320 /* UIColor+Random.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +30,12 @@
 		633515952144BDB900A28320 /* CONOpeningViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONOpeningViewController.m; sourceTree = "<group>"; };
 		633515982144BE4600A28320 /* CONGameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CONGameViewController.h; sourceTree = "<group>"; };
 		633515992144BE4600A28320 /* CONGameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONGameViewController.m; sourceTree = "<group>"; };
+		6335159D2144C6A100A28320 /* CONCard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CONCard.h; sourceTree = "<group>"; };
+		6335159E2144C6A100A28320 /* CONCard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONCard.m; sourceTree = "<group>"; };
+		633515AA2144CB4700A28320 /* CONCardCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CONCardCollectionViewCell.h; sourceTree = "<group>"; };
+		633515AB2144CB4700A28320 /* CONCardCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CONCardCollectionViewCell.m; sourceTree = "<group>"; };
+		633515AE2144CDDA00A28320 /* UIColor+Random.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+Random.h"; sourceTree = "<group>"; };
+		633515AF2144CDDA00A28320 /* UIColor+Random.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Random.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +68,9 @@
 		6335157C2144BD1700A28320 /* concentration */ = {
 			isa = PBXGroup;
 			children = (
+				633515AD2144CDC300A28320 /* Extensions */,
+				6335159C2144C68700A28320 /* Views */,
+				6335159B2144C67700A28320 /* Models */,
 				633515932144BD8200A28320 /* View Controllers */,
 				6335157D2144BD1700A28320 /* AppDelegate.h */,
 				6335157E2144BD1700A28320 /* AppDelegate.m */,
@@ -79,6 +91,33 @@
 				633515992144BE4600A28320 /* CONGameViewController.m */,
 			);
 			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		6335159B2144C67700A28320 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6335159D2144C6A100A28320 /* CONCard.h */,
+				6335159E2144C6A100A28320 /* CONCard.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6335159C2144C68700A28320 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				633515AA2144CB4700A28320 /* CONCardCollectionViewCell.h */,
+				633515AB2144CB4700A28320 /* CONCardCollectionViewCell.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		633515AD2144CDC300A28320 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				633515AE2144CDDA00A28320 /* UIColor+Random.h */,
+				633515AF2144CDDA00A28320 /* UIColor+Random.m */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -150,7 +189,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				633515B02144CDDA00A28320 /* UIColor+Random.m in Sources */,
 				6335158D2144BD1800A28320 /* main.m in Sources */,
+				633515AC2144CB4700A28320 /* CONCardCollectionViewCell.m in Sources */,
+				6335159F2144C6A100A28320 /* CONCard.m in Sources */,
 				633515962144BDB900A28320 /* CONOpeningViewController.m in Sources */,
 				6335157F2144BD1700A28320 /* AppDelegate.m in Sources */,
 				6335159A2144BE4600A28320 /* CONGameViewController.m in Sources */,
