@@ -11,7 +11,7 @@
 
 @interface CONNetworkingController()
 
-@property (nonatomic, nullable, strong) NSUUID *userGuid;
+@property (nonatomic, nullable, strong) NSString *userGuid;
 
 @end
 
@@ -29,11 +29,12 @@ const BOOL MockingEnabled = YES;
     return controller;
 }
 
-- (NSUUID *)userGuid {
+- (NSString *)userGuid {
     if (!_userGuid) {
-        NSUUID *guid = [[NSUserDefaults standardUserDefaults] objectForKey:UserGUID];
+        NSString *guid = [[NSUserDefaults standardUserDefaults] stringForKey:UserGUID];
         if(!guid) {
-            guid = [NSUUID UUID];
+            NSUUID *rawUUID = [NSUUID UUID];
+            guid = [rawUUID UUIDString];
             [[NSUserDefaults standardUserDefaults] setObject:guid forKey:UserGUID];
         }
         _userGuid = guid;
@@ -55,10 +56,12 @@ const BOOL MockingEnabled = YES;
         
         NSURLSession *session = [NSURLSession sharedSession];
         NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            CONGameState *gameState = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-            if (completion) {
-                completion(gameState);
-            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CONGameState *gameState = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+                if (completion) {
+                    completion(gameState);
+                }
+            });
         }];
         [dataTask resume];
     }
