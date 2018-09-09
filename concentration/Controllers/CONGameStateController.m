@@ -30,10 +30,9 @@ static NSString *TopScoresKey = @"kCONTopScoresKey";
     return controller;
 }
 
-- (void)saveScore:(NSInteger)score withCardCount:(NSInteger)count {
+- (void)saveScore:(CONScore *)score {
     NSMutableArray<CONScore *> *scoreArray = [[self topScores] mutableCopy];
-    CONScore *parsedScore = [[CONScore alloc] initWithScore:score numberOfPairs:count];
-    [scoreArray addObject:parsedScore];
+    [scoreArray addObject:score];
     
     [scoreArray sortUsingComparator:^NSComparisonResult(CONScore *_Nonnull obj1, CONScore *_Nonnull obj2) {
         return obj1.score > obj2.score;
@@ -41,6 +40,10 @@ static NSString *TopScoresKey = @"kCONTopScoresKey";
     
     [self setTopScores:[scoreArray copy]];
 }
+
+#pragma mark - Game State Persistence
+
+
 
 #pragma mark - Top Score Persistence
 

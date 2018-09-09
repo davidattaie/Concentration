@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class CONGameState;
+
 @interface CONGameViewController : UIViewController
 
-- (instancetype)initWithSize:(NSInteger)size;
+- (instancetype)initWithGameState:(CONGameState *)gameState;
 
 @end

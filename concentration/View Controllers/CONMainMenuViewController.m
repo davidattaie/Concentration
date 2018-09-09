@@ -10,6 +10,7 @@
 #import "CONSelectLevelViewController.h"
 #import "CONMainMenuViewController.h"
 #import "CONGameViewController.h"
+#import "CONGameState.h"
 
 @interface CONMainMenuViewController () <CONSelectLevelDelegate>
 
@@ -91,7 +92,8 @@ static CGFloat ButtonHeight = 80.0f;
     [self.selectLevelController.view removeFromSuperview];
     self.selectLevelController = nil;
     
-    CONGameViewController *gameViewController = [[CONGameViewController alloc] initWithSize:level];
+    CONGameState *gameState = [[CONGameState alloc] initNewGameWithDifficulty:level];
+    CONGameViewController *gameViewController = [[CONGameViewController alloc] initWithGameState:gameState];
     [self presentViewController:gameViewController animated:YES completion:nil];
 }
 

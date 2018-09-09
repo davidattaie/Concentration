@@ -16,6 +16,6 @@
 
 + (CONGameStateController * __nonnull)sharedController;
 
-- (void)saveScore:(NSInteger)score withCardCount:(NSInteger)count;
+- (void)saveScore:(CONScore *)score;
 
 @end

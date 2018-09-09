@@ -9,17 +9,16 @@
 #import "CONCardCollectionViewCell.h"
 #import "CONGameStateController.h"
 #import "CONGameViewController.h"
-#import "UIColor+Random.h"
+#import "CONGameState.h"
+#import "CONScore.h"
 #import "CONCard.h"
 
-@interface CONGameViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface CONGameViewController () <UICollectionViewDataSource, UICollectionViewDelegate, CONGameStateDelegate>
 
-@property (nonatomic, nullable, strong) NSArray<CONCard *> *arrayOfCards;
+@property (nonatomic, nullable, strong) CONGameState *currentGameState;
 @property (nonatomic, nullable, weak) UICollectionView *collectionView;
 @property (nonatomic, nullable, weak) UIButton *endGameButton;
 @property (nonatomic, nullable, weak) UILabel *scoreLabel;
-@property (nonatomic, assign) NSInteger numberOfPairs;
-@property (nonatomic, assign) NSInteger score;
 
 @end
 
@@ -27,9 +26,10 @@
 
 static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see their selection for
 
-- (instancetype)initWithSize:(NSInteger)size {
+- (instancetype)initWithGameState:(CONGameState *)gameState {
     if (self = [super init]) {
-        _numberOfPairs = size;
+        _currentGameState = gameState;
+        [_currentGameState setDelegate:self];
     }
     return self;
 }
@@ -47,13 +47,9 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 }
 
 - (void)setupGame {
-    [self setupCards];
-    [self setScore:0];
-}
-
-- (void)setScore:(NSInteger)score {
-    _score = score;
-    [self updateScore];
+    self.currentGameState = [[CONGameState alloc] initNewGameWithDifficulty:self.currentGameState.score.numberOfPairs];
+    [self.currentGameState setDelegate:self];
+    [self.collectionView reloadData];
 }
 
 - (void)setupCollectionView {
@@ -83,7 +79,9 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     [self.view addSubview:scoreLabel];
     [self setupConstraintsForScoreLabel:scoreLabel];
     self.scoreLabel = scoreLabel;
-    [self updateScore];
+    
+    NSString *scoreString = [NSString stringWithFormat:@"Score: %li", self.currentGameState.score.score];
+    [self.scoreLabel setText:scoreString];
 }
 
 - (void)setupConstraintsForScoreLabel:(UILabel *)label {
@@ -112,18 +110,13 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 #pragma mark - Check Game State And Configure Score
 
 - (void)checkGameStatus {
-    for (CONCard *card in self.arrayOfCards) {
+    for (CONCard *card in self.currentGameState.arrayOfCards) {
         if (!card.isRevealed) {
             return;
         }
     }
-    [[CONGameStateController sharedController] saveScore:self.score withCardCount:self.numberOfPairs];
+    [[CONGameStateController sharedController] saveScore:self.currentGameState.score];
     [self showFinalScore];
-}
-
-- (void)updateScore {
-    NSString *scoreString = [NSString stringWithFormat:@"Score: %li", self.score];
-    [self.scoreLabel setText:scoreString];
 }
 
 #pragma mark - Actions
@@ -134,7 +127,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 }
 
 - (void)showFinalScore {
-    NSString *message = [NSString stringWithFormat:@"Your score was %li\nWould you like to start a new game?", self.score];
+    NSString *message = [NSString stringWithFormat:@"Your score was %li\nWould you like to start a new game?", self.currentGameState.score.score];
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Congratulations!" message:message preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:@"New Game" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self setupGame];
@@ -149,25 +142,18 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 #pragma mark - Setup and Configure Cards
 
 - (void)setupCards {
-    NSMutableSet<CONCard *> *cardsSet = [NSMutableSet<CONCard *> new];
-    for (int i = 0; i < self.numberOfPairs; i++) {
-        CONCard *card = [[CONCard alloc] initWithColor:[UIColor randomColor] andValue:i];
-        [cardsSet addObject:card];
-        [cardsSet addObject:[card copy]];
-    }
 
-    [self setArrayOfCards:[cardsSet allObjects]];
 }
 
 #pragma mark - Collection View Data Source
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self arrayOfCards].count;
+    return self.currentGameState.arrayOfCards.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     CONCardCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[CONCardCollectionViewCell cellIdentifier] forIndexPath:indexPath];
-    CONCard *card = self.arrayOfCards[indexPath.row];
+    CONCard *card = self.currentGameState.arrayOfCards[indexPath.row];
     [cell setupWithCard:card];
     return cell;
 }
@@ -175,11 +161,11 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 #pragma mark - Collection View Delegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    CONCard *selectedCard = self.arrayOfCards[indexPath.row];
+    CONCard *selectedCard = self.currentGameState.arrayOfCards[indexPath.row];
     CONCardCollectionViewCell *selectedCell = (CONCardCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [selectedCell setupWithCard:selectedCard];
     
-    self.score++;
+    [self.currentGameState incrementScore];
     
     if (collectionView.indexPathsForSelectedItems.count > 1) {
         [collectionView setUserInteractionEnabled:NO];
@@ -187,7 +173,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DeselectingTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             for (NSIndexPath *path in collectionView.indexPathsForSelectedItems) {
                 CONCardCollectionViewCell *cell = (CONCardCollectionViewCell *)[collectionView cellForItemAtIndexPath:path];
-                CONCard *card = self.arrayOfCards[path.row];
+                CONCard *card = self.currentGameState.arrayOfCards[path.row];
                 [collectionView deselectItemAtIndexPath:path animated:NO];
                 [cell setupWithCard:card];
                 
@@ -202,6 +188,11 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
             [weakSelf checkGameStatus];
         });
     }
+}
+
+- (void)scoreDidUpdate:(CONScore *)score {
+    NSString *scoreString = [NSString stringWithFormat:@"Score: %li", score.score];
+    [self.scoreLabel setText:scoreString];
 }
 
 @end

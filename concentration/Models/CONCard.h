@@ -8,7 +8,7 @@
 
 @import UIKit;
 
-@interface CONCard : NSObject <NSCopying>
+@interface CONCard : NSObject <NSCopying, NSCoding>
 
 @property (nonatomic, nullable, strong) UIColor *color;
 @property (nonatomic, assign) NSInteger value;
