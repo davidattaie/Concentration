@@ -6,21 +6,22 @@
 //  Copyright © 2018 David Attaie. All rights reserved.
 //
 
+#import "CONSelectLevelViewController.h"
 #import "CONOpeningViewController.h"
 #import "CONGameViewController.h"
 
-@interface CONOpeningViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
+@interface CONOpeningViewController () <CONSelectLevelDelegate>
+
+@property (nonatomic, nullable, weak) CONSelectLevelViewController *selectLevelController;
 
 @end
 
 @implementation CONOpeningViewController
 
 static CGFloat ButtonHeight = 80.0f;
-static NSInteger MaximumDifficulty = 100;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.view setBackgroundColor:[UIColor redColor]];
     [self setupButtonStack];
 }
 
@@ -59,39 +60,32 @@ static NSInteger MaximumDifficulty = 100;
 }
 
 #pragma mark - Button Actions
-
+    
 - (void)launchNewGame:(id)target {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Difficulty"
-                                                                             message:@"\n\n\n\n\n\n\n" preferredStyle:UIAlertControllerStyleAlert];
-    UIPickerView *pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(5.0f, 20.0f, 250.0f, 140.0f)];
-    [pickerView setDataSource:self];
-    [pickerView setDelegate:self];
-    [pickerView selectRow:4 inComponent:0 animated:NO];
-    [alertController.view addSubview:pickerView];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Select Difficulty" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-        NSInteger selectedLevel = [pickerView selectedRowInComponent:0] + 1; //dont allow levels of size 0
-        CONGameViewController *gameViewController = [[CONGameViewController alloc] initWithSize:selectedLevel];
-        [self presentViewController:gameViewController animated:YES completion:nil];
-    }]];
-    
-    [self presentViewController:alertController animated:YES completion:nil];
-    
+    CONSelectLevelViewController *selectLevelController = [[CONSelectLevelViewController alloc] init];
+    [selectLevelController.view setBackgroundColor:[UIColor whiteColor]];
+    [selectLevelController setDelegate:self];
+    [self addChildViewController:selectLevelController];
+    [self.view addSubview:selectLevelController.view];
+    self.selectLevelController = selectLevelController;
+    [self setupConstraintsForSelectLevelController:selectLevelController.view];
 }
 
-#pragma mark - Picker View Data Source
-
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    return [NSString stringWithFormat:@"%li", row + 1];
+- (void)setupConstraintsForSelectLevelController:(UIView *)selectLevelView {
+    [selectLevelView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[selectLevelView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-16.0f] setActive:YES];
+    [[selectLevelView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:16.0f] setActive:YES];
+    [[selectLevelView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor] setActive:YES];
+    [[selectLevelView.heightAnchor constraintEqualToConstant:240.0f] setActive:YES];
 }
 
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return MaximumDifficulty;
-}
-
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
-    return 1;
+- (void)didSelectLevel:(NSInteger)level {
+    CONGameViewController *gameViewController = [[CONGameViewController alloc] initWithSize:level];
+    [self presentViewController:gameViewController animated:YES completion:^{
+        [self.selectLevelController removeFromParentViewController];
+        [self.selectLevelController.view removeFromSuperview];
+        self.selectLevelController = nil;
+    }];
 }
 
 @end

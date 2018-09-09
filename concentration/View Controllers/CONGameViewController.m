@@ -35,7 +35,6 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.view setBackgroundColor:[UIColor greenColor]];
     [self setupGame];
     [self setupScoreLabel];
     [self setupEndGameButton];
@@ -79,6 +78,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 - (void)setupScoreLabel {
     UILabel *scoreLabel = [UILabel new];
     [scoreLabel setTextAlignment:NSTextAlignmentRight];
+    [scoreLabel setTextColor:[UIColor whiteColor]];
     [self.view addSubview:scoreLabel];
     [self setupConstraintsForScoreLabel:scoreLabel];
     self.scoreLabel = scoreLabel;
