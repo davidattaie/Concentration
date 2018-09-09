@@ -36,7 +36,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor greenColor]];
-    [self setupCards];
+    [self setupGame];
     [self setupScoreLabel];
     [self setupEndGameButton];
     [self setupCollectionView];
@@ -44,6 +44,16 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+
+- (void)setupGame {
+    [self setupCards];
+    [self setScore:0];
+}
+
+- (void)setScore:(NSInteger)score {
+    _score = score;
+    [self updateScore];
 }
 
 - (void)setupCollectionView {
@@ -54,6 +64,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     [collectionView setAllowsMultipleSelection:YES];
     [collectionView registerClass:[CONCardCollectionViewCell class] forCellWithReuseIdentifier:[CONCardCollectionViewCell cellIdentifier]];
     [self.view addSubview:collectionView];
+    self.collectionView = collectionView;
     [self setupConstraintsForCollectionView:collectionView];
 }
 
@@ -105,6 +116,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
             return;
         }
     }
+    [self showFinalScore];
 }
 
 - (void)updateScore {
@@ -117,6 +129,19 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 - (void)endGame:(id)target {
     //notification to save state?
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)showFinalScore {
+    NSString *message = [NSString stringWithFormat:@"Good Job!\n\nYour score was %li\nWould you like to start a new game?", self.score];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Congratulations!" message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"New Game" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self setupGame];
+        [self.collectionView reloadData];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Main Menu" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 #pragma mark - Setup and Configure Cards
@@ -153,7 +178,6 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     [selectedCell setupWithCard:selectedCard];
     
     self.score++;
-    [self updateScore];
     
     if (collectionView.indexPathsForSelectedItems.count > 1) {
         [collectionView setUserInteractionEnabled:NO];

@@ -9,13 +9,14 @@
 #import "CONOpeningViewController.h"
 #import "CONGameViewController.h"
 
-@interface CONOpeningViewController ()
+@interface CONOpeningViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
 @end
 
 @implementation CONOpeningViewController
 
 static CGFloat ButtonHeight = 80.0f;
+static NSInteger MaximumDifficulty = 1024;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -60,8 +61,37 @@ static CGFloat ButtonHeight = 80.0f;
 #pragma mark - Button Actions
 
 - (void)launchNewGame:(id)target {
-    CONGameViewController *gameViewController = [[CONGameViewController alloc] initWithSize:5];
-    [self presentViewController:gameViewController animated:YES completion:nil];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Difficulty"
+                                                                             message:@"\n\n\n\n\n\n\n" preferredStyle:UIAlertControllerStyleAlert];
+    UIPickerView *pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(5.0f, 20.0f, 250.0f, 140.0f)];
+    [pickerView setDataSource:self];
+    [pickerView setDelegate:self];
+    [pickerView selectRow:4 inComponent:0 animated:NO];
+    [alertController.view addSubview:pickerView];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Select Difficulty" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+        NSInteger selectedLevel = [pickerView selectedRowInComponent:0] + 1; //dont allow levels of size 0
+        CONGameViewController *gameViewController = [[CONGameViewController alloc] initWithSize:selectedLevel];
+        [self presentViewController:gameViewController animated:YES completion:nil];
+    }]];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+    
+}
+
+#pragma mark - Picker View Data Source
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    return [NSString stringWithFormat:@"%li", row + 1];
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return MaximumDifficulty;
+}
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
 }
 
 @end
