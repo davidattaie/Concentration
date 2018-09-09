@@ -21,8 +21,11 @@
 
 - (void)setupWithCard:(CONCard *)card {
     //setup and configure the view with the card
-    UIColor *color = card.isRevealed ? [card color] : [CONCardCollectionViewCell defaultColor];
-    [self setBackgroundColor:color];
+    if (card.isRevealed || self.isSelected) {
+        [self setBackgroundColor:[card color]];
+    } else {
+        [self setBackgroundColor:[CONCardCollectionViewCell defaultColor]];
+    }
 }
 
 @end
