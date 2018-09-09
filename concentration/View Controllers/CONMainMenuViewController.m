@@ -6,17 +6,18 @@
 //  Copyright © 2018 David Attaie. All rights reserved.
 //
 
+#import "CONPreviousScoreViewController.h"
 #import "CONSelectLevelViewController.h"
-#import "CONOpeningViewController.h"
+#import "CONMainMenuViewController.h"
 #import "CONGameViewController.h"
 
-@interface CONOpeningViewController () <CONSelectLevelDelegate>
+@interface CONMainMenuViewController () <CONSelectLevelDelegate>
 
 @property (nonatomic, nullable, weak) CONSelectLevelViewController *selectLevelController;
 
 @end
 
-@implementation CONOpeningViewController
+@implementation CONMainMenuViewController
 
 static CGFloat ButtonHeight = 80.0f;
 
@@ -36,6 +37,7 @@ static CGFloat ButtonHeight = 80.0f;
     
     UIButton *previousScoresButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [previousScoresButton setTitle:@"Previous Scores" forState:UIControlStateNormal];
+    [previousScoresButton addTarget:self action:@selector(showPreviousScores:) forControlEvents:UIControlEventTouchUpInside];
     
     return @[newGameButton, previousScoresButton];
 }
@@ -61,7 +63,7 @@ static CGFloat ButtonHeight = 80.0f;
 
 #pragma mark - Button Actions
     
-- (void)launchNewGame:(id)target {
+- (void)launchNewGame:(id)sender {
     CONSelectLevelViewController *selectLevelController = [[CONSelectLevelViewController alloc] init];
     [selectLevelController.view setBackgroundColor:[UIColor whiteColor]];
     [selectLevelController setDelegate:self];
@@ -69,6 +71,11 @@ static CGFloat ButtonHeight = 80.0f;
     [self.view addSubview:selectLevelController.view];
     self.selectLevelController = selectLevelController;
     [self setupConstraintsForSelectLevelController:selectLevelController.view];
+}
+
+- (void)showPreviousScores:(id)sender {
+    CONPreviousScoreViewController *previousScoreViewController = [CONPreviousScoreViewController new];
+    [self.navigationController pushViewController:previousScoreViewController animated:YES];
 }
 
 - (void)setupConstraintsForSelectLevelController:(UIView *)selectLevelView {
@@ -80,12 +87,12 @@ static CGFloat ButtonHeight = 80.0f;
 }
 
 - (void)didSelectLevel:(NSInteger)level {
+    [self.selectLevelController removeFromParentViewController];
+    [self.selectLevelController.view removeFromSuperview];
+    self.selectLevelController = nil;
+    
     CONGameViewController *gameViewController = [[CONGameViewController alloc] initWithSize:level];
-    [self presentViewController:gameViewController animated:YES completion:^{
-        [self.selectLevelController removeFromParentViewController];
-        [self.selectLevelController.view removeFromSuperview];
-        self.selectLevelController = nil;
-    }];
+    [self presentViewController:gameViewController animated:YES completion:nil];
 }
 
 @end

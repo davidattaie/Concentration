@@ -6,7 +6,7 @@
 //  Copyright © 2018 David Attaie. All rights reserved.
 //
 
-#import "CONOpeningViewController.h"
+#import "CONMainMenuViewController.h"
 #import "AppDelegate.h"
 
 @interface AppDelegate ()
@@ -20,8 +20,10 @@
     UIWindow *window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
     [self setWindow:window];
     
-    CONOpeningViewController *openingViewController = [CONOpeningViewController new];
-    [window setRootViewController:openingViewController];
+    CONMainMenuViewController *openingViewController = [CONMainMenuViewController new];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:openingViewController];
+    
+    [window setRootViewController:navController];
     [window makeKeyAndVisible];
     
     return YES;
