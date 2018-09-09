@@ -15,7 +15,7 @@
 
 @implementation CONOpeningViewController
 
-static CGFloat buttonHeight = 80.0f;
+static CGFloat ButtonHeight = 80.0f;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -51,7 +51,7 @@ static CGFloat buttonHeight = 80.0f;
 - (void)setupConstraintsForButtonStack:(UIStackView *)buttonStack withNumberOfButtons:(NSInteger)numberOfButtons {
     [[buttonStack.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor] setActive:YES];
     [buttonStack setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[buttonStack.heightAnchor constraintEqualToConstant:numberOfButtons * buttonHeight] setActive:YES];
+    [[buttonStack.heightAnchor constraintEqualToConstant:numberOfButtons * ButtonHeight] setActive:YES];
     [[buttonStack.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor] setActive:YES];
     [[buttonStack.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor] setActive:YES];
     [self.view layoutIfNeeded];

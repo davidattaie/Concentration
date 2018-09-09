@@ -23,7 +23,7 @@
 
 @implementation CONGameViewController
 
-static CGFloat deselectingTime = 0.2f;  //Amount of time the user gets to see their selection for
+static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see their selection for
 
 - (instancetype)initWithSize:(NSInteger)size {
     if (self = [super init]) {
@@ -153,7 +153,7 @@ static CGFloat deselectingTime = 0.2f;  //Amount of time the user gets to see th
     if (collectionView.indexPathsForSelectedItems.count > 1) {
         [collectionView setUserInteractionEnabled:NO];
         __weak typeof(self) weakSelf = self;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(deselectingTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DeselectingTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             for (NSIndexPath *path in collectionView.indexPathsForSelectedItems) {
                 CONCardCollectionViewCell *cell = (CONCardCollectionViewCell *)[collectionView cellForItemAtIndexPath:path];
                 CONCard *card = self.arrayOfCards[path.row];
