@@ -18,6 +18,7 @@
 @property (nonatomic, nullable, weak) UIButton *endGameButton;
 @property (nonatomic, nullable, weak) UILabel *scoreLabel;
 @property (nonatomic, assign) NSInteger numberOfPairs;
+@property (nonatomic, assign) NSInteger score;
 
 @end
 
@@ -70,7 +71,7 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     [self.view addSubview:scoreLabel];
     [self setupConstraintsForScoreLabel:scoreLabel];
     self.scoreLabel = scoreLabel;
-    [self checkGameStatus];
+    [self updateScore];
 }
 
 - (void)setupConstraintsForScoreLabel:(UILabel *)label {
@@ -78,7 +79,6 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     [[label.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor] setActive:YES];
     [[label.heightAnchor constraintEqualToConstant:24.0f] setActive:YES];
     [[label.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:-24.0f] setActive:YES];
-//    [[label.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor] setActive:YES];
 }
 
 - (void)setupEndGameButton {
@@ -100,13 +100,15 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 #pragma mark - Check Game State And Configure Score
 
 - (void)checkGameStatus {
-    NSInteger score = 0;
     for (CONCard *card in self.arrayOfCards) {
-        if (card.isRevealed) {
-            score++;
+        if (!card.isRevealed) {
+            return;
         }
     }
-    NSString *scoreString = [NSString stringWithFormat:@"Score: %li", score];
+}
+
+- (void)updateScore {
+    NSString *scoreString = [NSString stringWithFormat:@"Score: %li", self.score];
     [self.scoreLabel setText:scoreString];
 }
 
@@ -149,6 +151,9 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     CONCard *selectedCard = self.arrayOfCards[indexPath.row];
     CONCardCollectionViewCell *selectedCell = (CONCardCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [selectedCell setupWithCard:selectedCard];
+    
+    self.score++;
+    [self updateScore];
     
     if (collectionView.indexPathsForSelectedItems.count > 1) {
         [collectionView setUserInteractionEnabled:NO];
