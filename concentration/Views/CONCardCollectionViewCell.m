@@ -11,13 +11,18 @@
 
 @implementation CONCardCollectionViewCell
 
++ (UIColor *)defaultColor {
+    return [UIColor grayColor];
+}
+
 + (NSString *)cellIdentifier {
     return NSStringFromClass(self);
 }
 
 - (void)setupWithCard:(CONCard *)card {
     //setup and configure the view with the card
-    [self setBackgroundColor:[card color]];
+    UIColor *color = card.isRevealed ? [card color] : [CONCardCollectionViewCell defaultColor];
+    [self setBackgroundColor:color];
 }
 
 @end

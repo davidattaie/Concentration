@@ -12,6 +12,7 @@
 
 @property (nonatomic, nullable, strong) UIColor *color;
 @property (nonatomic, assign) NSInteger value;
+@property (nonatomic, assign) BOOL isRevealed;
 
 - (instancetype)initWithColor:(UIColor *)color andValue:(NSInteger)value;
 

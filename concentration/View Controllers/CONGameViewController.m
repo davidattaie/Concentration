@@ -40,7 +40,8 @@
 }
 
 - (void)setupCollectionView {
-    UICollectionView *collectionView = [UICollectionView new];
+    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:[self.view frame] collectionViewLayout:flowLayout];
     [collectionView setDataSource:self];
     [collectionView registerClass:[CONCardCollectionViewCell class] forCellWithReuseIdentifier:[CONCardCollectionViewCell cellIdentifier]];
     [self.view addSubview:collectionView];
@@ -64,6 +65,7 @@
         [cardsSet addObject:card];
         [cardsSet addObject:[card copy]];
     }
+
     [self setArrayOfCards:[cardsSet allObjects]];
 }
 
