@@ -16,7 +16,7 @@
 @implementation CONOpeningViewController
 
 static CGFloat ButtonHeight = 80.0f;
-static NSInteger MaximumDifficulty = 1024;
+static NSInteger MaximumDifficulty = 100;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
