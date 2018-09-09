@@ -18,7 +18,7 @@
 
 @implementation CONSelectLevelViewController
 
-static NSInteger MaximumDifficulty = 100;
+const NSInteger MaximumDifficulty = 100;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -26,6 +26,8 @@ static NSInteger MaximumDifficulty = 100;
     [self setupPickerView];
     [self setupNextButton];
 }
+
+#pragma mark - Configure and Setup Views
 
 - (void)setupTitleLabel {
     UILabel *titleLabel = [UILabel new];

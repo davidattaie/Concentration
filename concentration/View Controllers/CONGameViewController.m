@@ -24,7 +24,7 @@
 
 @implementation CONGameViewController
 
-static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see their selection for
+const CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see their selection for - animation purposes
 
 - (instancetype)initWithGameState:(CONGameState *)gameState {
     if (self = [super init]) {
@@ -41,6 +41,8 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
     [self setupEndGameButton];
     [self setupCollectionView];
 }
+
+#pragma mark - Configure and Load Views
 
 - (void)setNewGame {
     NSInteger difficulty = [self.currentGameState.score numberOfPairs];
@@ -165,12 +167,11 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
 #pragma mark - Collection View Delegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [self incrementScore];
+    
     CONCard *selectedCard = self.currentGameState.arrayOfCards[indexPath.row];
     CONCardCollectionViewCell *selectedCell = (CONCardCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [selectedCell setupWithCard:selectedCard];
-    
-    [self.currentGameState incrementScore];
-    [[CONGameStateController sharedController] saveCurrentGameState:CONSaveGameLocationAll];
     
     if (collectionView.indexPathsForSelectedItems.count > 1) {
         [collectionView setUserInteractionEnabled:NO];
@@ -194,6 +195,14 @@ static CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see th
         });
     }
 }
+
+- (void)incrementScore {
+    [self.currentGameState incrementScore];
+    //Quality of Life - Dont save to server every time a move is made, only save locally
+    [[CONGameStateController sharedController] saveCurrentGameState:CONSaveGameLocationLocalOnly];
+}
+
+#pragma mark - CONGameSateDelegate Methods
 
 - (void)scoreDidUpdate:(CONScore *)score {
     NSString *scoreString = [NSString stringWithFormat:@"Score: %li", score.score];

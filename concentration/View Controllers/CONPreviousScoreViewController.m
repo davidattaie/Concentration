@@ -26,6 +26,8 @@
     [self setupTableView];
 }
 
+#pragma mark - Configure and Setup Views
+
 - (void)setupTableView {
     UITableView *tableView = [UITableView new];
     [tableView setDataSource:self];
@@ -43,6 +45,8 @@
     [[tableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor] setActive:YES];
     [[tableView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor] setActive:YES];
 }
+
+#pragma mark - Table View Data Source Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [[CONGameStateController sharedController] topScores].count;

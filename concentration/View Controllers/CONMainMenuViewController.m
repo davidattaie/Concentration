@@ -23,7 +23,7 @@
 
 @implementation CONMainMenuViewController
 
-static CGFloat ButtonHeight = 80.0f;
+const CGFloat ButtonHeight = 80.0f;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -50,6 +50,8 @@ static CGFloat ButtonHeight = 80.0f;
         [weakSelf.resumeGameButton stopLoading];
     }];
 }
+
+#pragma mark - Configure and Load Views
 
 - (NSArray<UIView *> *)buttons {
     UIButton *newGameButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -87,6 +89,14 @@ static CGFloat ButtonHeight = 80.0f;
     [self.view layoutIfNeeded];
 }
 
+- (void)setupConstraintsForSelectLevelController:(UIView *)selectLevelView {
+    [selectLevelView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[selectLevelView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-16.0f] setActive:YES];
+    [[selectLevelView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:16.0f] setActive:YES];
+    [[selectLevelView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor] setActive:YES];
+    [[selectLevelView.heightAnchor constraintEqualToConstant:240.0f] setActive:YES];
+}
+
 #pragma mark - Button Actions
     
 - (void)launchNewGame:(id)sender {
@@ -110,13 +120,7 @@ static CGFloat ButtonHeight = 80.0f;
     [self presentViewController:gameViewController animated:YES completion:nil];
 }
 
-- (void)setupConstraintsForSelectLevelController:(UIView *)selectLevelView {
-    [selectLevelView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[selectLevelView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-16.0f] setActive:YES];
-    [[selectLevelView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:16.0f] setActive:YES];
-    [[selectLevelView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor] setActive:YES];
-    [[selectLevelView.heightAnchor constraintEqualToConstant:240.0f] setActive:YES];
-}
+#pragma mark - Select Level Delegate Methods
 
 - (void)didSelectLevel:(NSInteger)level {
     [self.selectLevelController removeFromParentViewController];
