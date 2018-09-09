@@ -33,6 +33,7 @@ const CGFloat ButtonHeight = 80.0f;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self loadAndUpdateResumeStatus];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (void)loadAndUpdateResumeStatus {
@@ -111,6 +112,7 @@ const CGFloat ButtonHeight = 80.0f;
 
 - (void)showPreviousScores:(id)sender {
     CONPreviousScoreViewController *previousScoreViewController = [CONPreviousScoreViewController new];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
     [self.navigationController pushViewController:previousScoreViewController animated:YES];
 }
 
