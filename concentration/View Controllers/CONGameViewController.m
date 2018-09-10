@@ -172,13 +172,12 @@ const CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see the
 #pragma mark - Collection View Delegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self incrementScore];
-    
     CONCard *selectedCard = self.currentGameState.arrayOfCards[indexPath.row];
     CONCardCollectionViewCell *selectedCell = (CONCardCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [selectedCell setupWithCard:selectedCard];
     
     if (collectionView.indexPathsForSelectedItems.count > 1) {
+        [self incrementScore];
         [collectionView setUserInteractionEnabled:NO];
         __weak typeof(self) weakSelf = self;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DeselectingTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
