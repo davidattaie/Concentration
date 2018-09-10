@@ -18,6 +18,7 @@
 
 @property (nonatomic, nullable, weak) CONSelectLevelViewController *selectLevelController;
 @property (nonatomic, nullable, weak) CONLoadingButton *resumeGameButton;
+@property (nonatomic, nullable, weak) UILabel *titleLabel;
 
 @end
 
@@ -27,6 +28,7 @@ const CGFloat ButtonHeight = 80.0f;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setupTitleLabel];
     [self setupButtonStack];
 }
 
@@ -53,6 +55,25 @@ const CGFloat ButtonHeight = 80.0f;
 }
 
 #pragma mark - Configure and Load Views
+
+- (void)setupTitleLabel {
+    UILabel *titleLabel = [UILabel new];
+    [titleLabel setText:@"Concentration"];
+    [titleLabel setTextColor:[UIColor whiteColor]];
+    [titleLabel setTextAlignment:NSTextAlignmentCenter];
+    [titleLabel setFont:[UIFont boldSystemFontOfSize:36.0f]];
+    [self.view addSubview:titleLabel];
+    [self addConstraintsForTitleLabel:titleLabel];
+    self.titleLabel = titleLabel;
+}
+
+- (void)addConstraintsForTitleLabel:(UILabel *)titleLabel {
+    [titleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[titleLabel.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:80.0f] setActive:YES];
+    [[titleLabel.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:-8.0f] setActive:YES];
+    [[titleLabel.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:8.0f] setActive:YES];
+    [[titleLabel.heightAnchor constraintEqualToConstant:64.0f] setActive:YES];
+}
 
 - (NSArray<UIView *> *)buttons {
     UIButton *newGameButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -82,8 +103,9 @@ const CGFloat ButtonHeight = 80.0f;
 }
 
 - (void)setupConstraintsForButtonStack:(UIStackView *)buttonStack withNumberOfButtons:(NSInteger)numberOfButtons {
-    [[buttonStack.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor] setActive:YES];
     [buttonStack setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[buttonStack.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor constant:16.0f] setActive:YES];
+    [[buttonStack.topAnchor constraintGreaterThanOrEqualToAnchor:self.titleLabel.bottomAnchor constant:16.0f] setActive:YES];
     [[buttonStack.heightAnchor constraintEqualToConstant:numberOfButtons * ButtonHeight] setActive:YES];
     [[buttonStack.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor] setActive:YES];
     [[buttonStack.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor] setActive:YES];

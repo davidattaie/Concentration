@@ -54,6 +54,11 @@ const CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see the
 
 - (void)setupCollectionView {
     UICollectionViewFlowLayout *flowLayout = [UICollectionViewFlowLayout new];
+    CGFloat itemWidth = CGRectGetWidth(self.view.bounds) / 4.0f;
+    CGFloat itemHeight = itemWidth * 1.25f;
+    [flowLayout setItemSize:CGSizeMake(itemWidth, itemHeight)];
+    [flowLayout setSectionInset:UIEdgeInsetsMake(0, 16.0f, 0, 16.0f)];
+    
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:[self.view frame] collectionViewLayout:flowLayout];
     [collectionView setDataSource:self];
     [collectionView setDelegate:self];
@@ -66,10 +71,10 @@ const CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see the
 
 - (void)setupConstraintsForCollectionView:(UICollectionView *)collectionView {
     [collectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[collectionView.topAnchor constraintEqualToAnchor:self.scoreLabel.bottomAnchor] setActive:YES];
+    [[collectionView.topAnchor constraintEqualToAnchor:self.scoreLabel.bottomAnchor constant:8.0f] setActive:YES];
     [[collectionView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor] setActive:YES];
-    [[collectionView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor] setActive:YES];
-    [[collectionView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor] setActive:YES];
+    [[collectionView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:8.0f] setActive:YES];
+    [[collectionView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor constant:-8.0f] setActive:YES];
 }
 
 - (void)setupScoreLabel {
@@ -86,7 +91,7 @@ const CGFloat DeselectingTime = 0.2f;  //Amount of time the user gets to see the
 
 - (void)setupConstraintsForScoreLabel:(UILabel *)label {
     [label setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[label.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor] setActive:YES];
+    [[label.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:16.0f] setActive:YES];
     [[label.heightAnchor constraintEqualToConstant:24.0f] setActive:YES];
     [[label.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:-24.0f] setActive:YES];
 }

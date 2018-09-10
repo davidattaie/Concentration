@@ -22,8 +22,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setTitle:@"Top Scores"];
+    [self setupView];
     [self setupTableView];
+}
+
+- (void)setupView {
+    [self setTitle:@"Top Scores"];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
 }
 
 #pragma mark - Configure and Setup Views
