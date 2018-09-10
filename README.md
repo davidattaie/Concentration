@@ -7,3 +7,8 @@ Game features :-
 * Ability to save and retrieve last saved game
 * Highest score list with indication of how difficult it was
 * Support for networking should a service be setup to set/retrieve the data
+
+
+For more information, please see :
+
+https://en.wikipedia.org/wiki/Concentration_(game)
